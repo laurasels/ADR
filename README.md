@@ -4,7 +4,7 @@
 De beeldherkenning zal gebaseerd zijn op deze code: https://github.com/experiencor/keras-yolo2
 
 ## To do:
-* Opknippen videomateriaal in afzonderlijke frames `vlc "A2 HBR 59 92.wmv" --video-filter=scene --vout=dummy --scene-ratio=10 --scene-path="/home/datalab/Documenten/ADR/frames" vlc://quit`
+* Opknippen videomateriaal in afzonderlijke frames: `vlc "A2 HBR 59 92.wmv" --video-filter=scene --vout=dummy --scene-ratio=10 --scene-path="/home/datalab/Documenten/ADR/frames" vlc://quit`
 
 * Labelen vrachtwagens (labeltool)
 * Model trainen om vrachtwagens te herkennen
