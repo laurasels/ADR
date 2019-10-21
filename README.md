@@ -9,7 +9,7 @@ De beeldherkenning zal gebaseerd zijn op deze code: https://github.com/experienc
 * Model trainen om vrachtwagens te herkennen
 * Model testen 
 
-* Labelen ADR-borden op vrachtwagens
+* Labelen ADR-borden op vrachtwagens (labeltool)
 * Model trainen om borden op vrachtwagens te herkennen
 * Model testen
 
