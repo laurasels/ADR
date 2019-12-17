@@ -28,7 +28,7 @@ flags.DEFINE_integer('num_classes', 80, 'number of classes in the model')
 
 
 def main(_argv):
-    i=1
+    i=35896
     physical_devices = tf.config.experimental.list_physical_devices('GPU')
     if len(physical_devices) > 0:
         tf.config.experimental.set_memory_growth(physical_devices[0], True)
@@ -55,6 +55,23 @@ def main(_argv):
     for file in os.listdir(path):
         print(file)
         if file.endswith('mp4'):
+            if file =='markgoudzwaard_%T1.mp4':
+                continue
+            if file =='markgoudzwaard_%T1_1.mp4':
+                continue
+            if file =='markgoudzwaard_%T1_2.mp4':
+                continue
+            if file =='markgoudzwaard_%T1_3.mp4':
+                continue
+            if file =='markgoudzwaard_%T2.mp4':
+                continue
+            if file =='markgoudzwaard_%T2_1.mp4':
+                continue
+            if file =='markgoudzwaard_%T3.mp4':
+                continue
+            if file =='markgoudzwaard_%T3_1.mp4':
+                continue
+
             fullfile = str(path / file)
             print(fullfile)
             vid = cv2.VideoCapture(str(path / file))
@@ -73,6 +90,7 @@ def main(_argv):
         
                 if img is None:
                     logging.warning("Empty Frame")
+                    print(fullfile)
                     time.sleep(0.1)
                     continue
                 
@@ -86,18 +104,19 @@ def main(_argv):
                 times.append(t2-t1)
                 times = times[-20:]
         
-                # img = draw_outputs(img, (boxes, scores, classes, nums), class_names)
-                # img = cv2.putText(img, "Time: {:.2f}ms".format(sum(times)/len(times)*1000), (0, 30),
-                #                  cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 255), 2)
+                #img = draw_outputs(img, (boxes, scores, classes, nums), class_names)
+                #img = cv2.putText(img, "Time: {:.2f}ms".format(sum(times)/len(times)*1000), (0, 30),
+                #                 cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 255), 2)
         
                 # if FLAGS.output:
                     # out.write(img)
         
                     #car = 2, truck = 7
                 if 7 in classes:
-                    print('truck detected')
-                    cv2.imwrite('/computer-vision/ADR/data/detected_images/detectedtruck_' + str(i) +'.png', img)
-                    i+=1
+                    if max(max(scores))>0.7:
+                        print('truck detected')
+                        cv2.imwrite('/computer-vision/ADR/data/detected_images/detectedtruck_' + str(i) +'.png', img)
+                        i+=1
 
 if __name__ == '__main__':
     try:
