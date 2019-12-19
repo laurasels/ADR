@@ -20,4 +20,3 @@ De beeldherkenning zal gebaseerd zijn op deze code: https://github.com/zzh8829/y
 ### Stap 3: Model tekst op borden
 * Techniek (OCR) gebruiken om codes op herkende borden te lezen 
 
-#bla
