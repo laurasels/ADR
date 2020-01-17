@@ -5,13 +5,13 @@ import os
 import json
 
 # Specify paths
-cocopath = '/home/killaarsl/Documents/adr/coco.json'
+cocopath = '/computer-vision/ADR/data/output.json'
 
-# DGXimgpath = '/computer-vision/ADR/data/detected_images_with_GS/'
-# DGXxmlpath = '/computer-vision/ADR/data/detected_images_with_GS/annotations'
+DGXimgpath = '/computer-vision/ADR/data/detected_images_with_GS/'
+DGXxmlpath = Path('/computer-vision/ADR/data/detected_images_with_GS/annotations')
 
-DGXimgpath = '/home/killaarsl/Documents/adr/'
-DGXxmlpath = Path('/home/killaarsl/Documents/adr/annotations')
+#DGXimgpath = '/home/killaarsl/Documents/adr/'
+#DGXxmlpath = Path('/home/killaarsl/Documents/adr/annotations')
 
 def writebbox2xml(bbox,outputDir,file,annotation_name,width,height):
     # --  Write output of boundingbox to xml file
