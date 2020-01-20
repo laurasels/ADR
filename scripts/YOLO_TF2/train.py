@@ -47,6 +47,22 @@ flags.DEFINE_integer('num_classes', 80, 'number of classes in the model')
 flags.DEFINE_integer('weights_num_classes', None, 'specify num class for `weights` file if different, '
                      'useful in transfer learning with different number of classes')
 
+# Augmentation functions
+def color(x: tf.Tensor,y: tf.Tensor) -> tf.Tensor:
+    """Color augmentation
+
+    Args:
+        x: Image
+
+    Returns:
+        Augmented image
+    """
+    x = tf.image.random_hue(x, 0.08)
+    x = tf.image.random_saturation(x, 0.6, 1.6)
+    x = tf.image.random_brightness(x, 0.05)
+    x = tf.image.random_contrast(x, 0.7, 1.3)
+    return x,y
+
 
 def main(_argv):
     physical_devices = tf.config.experimental.list_physical_devices('GPU')
@@ -70,9 +86,12 @@ def main(_argv):
         train_dataset = dataset.load_fake_dataset()
     train_dataset = train_dataset.shuffle(buffer_size=512)
     train_dataset = train_dataset.batch(FLAGS.batch_size)
+    # Data augmentation
+    train_dataset = train_dataset.map(lambda image, label: (tf.image.random_contrast(image,lower=0.0, upper=1.0),label))
     train_dataset = train_dataset.map(lambda x, y: (
         dataset.transform_images(x, FLAGS.size),
         dataset.transform_targets(y, anchors, anchor_masks, FLAGS.size))).repeat()
+    # allow loading during calculations
     train_dataset = train_dataset.prefetch(
         buffer_size=tf.data.experimental.AUTOTUNE)
 
