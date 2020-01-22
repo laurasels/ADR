@@ -52,31 +52,7 @@ flags.DEFINE_integer('weights_num_classes', None, 'specify num class for `weight
 flags.DEFINE_integer('nr_aug_imgs',0,'number of augmented images to print')
 flags.DEFINE_string('aug_img_path','./','folder where the augmented images are stored')
 
-#def plot_images(dataset, n_images, samples_per_image):
-#    imagenr = 0
-#    for images in dataset.repeat(samples_per_image).batch(n_images):
-#        if images[0].shape == (1, 16, 416, 416, 3):
-#            image = np.vstack(images[0][:,0,:,:,:].numpy())
-##            print(image)
-#            plt.figure()
-#            plt.imsave('augmentation_images/augmentation_%s.png' %(imagenr),image)
-#            plt.close()
-#            print('saving nr %s' %(imagenr))
-#            imagenr+=1
-#            if imagenr >199:
-#                sys.exit()
-##            print(images[0].shape)
-##            print(type(images[0]))
-##            print(np.vstack(images[0][:,0,:,:,:].numpy()).shape)
-##            output[:, row*416:(row+1)*416] = np.vstack(images[0][:,0,:,:,:].numpy())
-##            row += 1
-#
-##    plt.figure()
-##    plt.imshow(output)
-##    plt.save('augmentation.png')
-#    print('saving done')
 def main(_argv):
-    print(FLAGS.aug_img_path)
     physical_devices = tf.config.experimental.list_physical_devices('GPU')
     if len(physical_devices) > 0:
         tf.config.experimental.set_memory_growth(physical_devices[0], True)
@@ -98,24 +74,8 @@ def main(_argv):
         train_dataset = dataset.load_fake_dataset()
     train_dataset = train_dataset.shuffle(buffer_size=512)
     train_dataset = train_dataset.batch(FLAGS.batch_size)
+    
     # Data augmentation
-#    train_dataset = train_dataset.map(lambda image, label: (tf.image.random_contrast(image,lower=0.7, upper=1.3),label))
-#    train_dataset = train_dataset.map(lambda image, label: (tf.image.random_brightness(image,max_delta=0.05),label))
-#    train_dataset = train_dataset.map(lambda image, label: (tf.image.random_hue(image,max_delta=0.08),label))
-#    train_dataset = train_dataset.map(lambda image, label: (tf.image.random_saturation(image,lower=100.6, upper=200.6),label))
-
-#    train_dataset = train_dataset.map(lambda image, label: tf.cond(tf.random.uniform([], 0, 1) > 0.75,
-#        lambda: (tf.image.random_saturation(image,lower=0.3, upper=2.5),label),
-#        lambda: (image,label)))
-#    train_dataset = train_dataset.map(lambda image, label: tf.cond(tf.random.uniform([], 0, 1) > 0.75,
-#        lambda: (tf.image.random_contrast(image,lower=0.5, upper=2.0),label),
-#        lambda: (image,label)))
-#    train_dataset = train_dataset.map(lambda image, label: tf.cond(tf.random.uniform([], 0, 1) > 0.75,
-#        lambda: (tf.image.random_brightness(image,max_delta=0.15),label),
-#        lambda: (image,label)))
-#    train_dataset = train_dataset.map(lambda image, label: tf.cond(tf.random.uniform([], 0, 1) > 0.75,
-#        lambda: (tf.image.random_hue(image,max_delta=0.08),label),
-#        lambda: (image,label)))
     train_dataset = custom_augmentation(train_dataset)
     train_dataset = train_dataset.map(lambda x, y: (
         dataset.transform_images(x, FLAGS.size),
