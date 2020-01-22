@@ -20,7 +20,8 @@ from yolov3_tf2.models import (
 )
 from yolov3_tf2.utils import freeze_all
 import yolov3_tf2.dataset as dataset
-
+import matplotlib.pyplot as plt
+import sys
 
 flags.DEFINE_string('dataset', '', 'path to dataset')
 flags.DEFINE_string('val_dataset', '', 'path to validation dataset')
@@ -47,23 +48,29 @@ flags.DEFINE_integer('num_classes', 80, 'number of classes in the model')
 flags.DEFINE_integer('weights_num_classes', None, 'specify num class for `weights` file if different, '
                      'useful in transfer learning with different number of classes')
 
-# Augmentation functions
-def color(x: tf.Tensor,y: tf.Tensor) -> tf.Tensor:
-    """Color augmentation
+def plot_images(dataset, n_images, samples_per_image):
+    imagenr = 0
+    for images in dataset.repeat(samples_per_image).batch(n_images):
+        if images[0].shape == (1, 16, 416, 416, 3):
+            image = np.vstack(images[0][:,0,:,:,:].numpy())
+#            print(image)
+            plt.figure()
+            plt.imsave('augmentation_images/augmentation_%s.png' %(imagenr),image)
+            plt.close()
+            print('saving nr %s' %(imagenr))
+            imagenr+=1
+            if imagenr >199:
+                sys.exit()
+#            print(images[0].shape)
+#            print(type(images[0]))
+#            print(np.vstack(images[0][:,0,:,:,:].numpy()).shape)
+#            output[:, row*416:(row+1)*416] = np.vstack(images[0][:,0,:,:,:].numpy())
+#            row += 1
 
-    Args:
-        x: Image
-
-    Returns:
-        Augmented image
-    """
-    x = tf.image.random_hue(x, 0.08)
-    x = tf.image.random_saturation(x, 0.6, 1.6)
-    x = tf.image.random_brightness(x, 0.05)
-    x = tf.image.random_contrast(x, 0.7, 1.3)
-    return x,y
-
-
+#    plt.figure()
+#    plt.imshow(output)
+#    plt.save('augmentation.png')
+    print('saving done')
 def main(_argv):
     physical_devices = tf.config.experimental.list_physical_devices('GPU')
     if len(physical_devices) > 0:
@@ -87,10 +94,29 @@ def main(_argv):
     train_dataset = train_dataset.shuffle(buffer_size=512)
     train_dataset = train_dataset.batch(FLAGS.batch_size)
     # Data augmentation
-    train_dataset = train_dataset.map(lambda image, label: (tf.image.random_contrast(image,lower=0.0, upper=1.0),label))
+#    train_dataset = train_dataset.map(lambda image, label: (tf.image.random_contrast(image,lower=0.7, upper=1.3),label))
+#    train_dataset = train_dataset.map(lambda image, label: (tf.image.random_brightness(image,max_delta=0.05),label))
+#    train_dataset = train_dataset.map(lambda image, label: (tf.image.random_hue(image,max_delta=0.08),label))
+#    train_dataset = train_dataset.map(lambda image, label: (tf.image.random_saturation(image,lower=100.6, upper=200.6),label))
+    train_dataset = train_dataset.map(lambda image, label: tf.cond(tf.random.uniform([], 0, 1) > 0.75,
+        lambda: (tf.image.random_saturation(image,lower=0.3, upper=2.5),label),
+        lambda: (image,label)))
+    train_dataset = train_dataset.map(lambda image, label: tf.cond(tf.random.uniform([], 0, 1) > 0.75,
+        lambda: (tf.image.random_contrast(image,lower=0.5, upper=2.0),label),
+        lambda: (image,label)))
+    train_dataset = train_dataset.map(lambda image, label: tf.cond(tf.random.uniform([], 0, 1) > 0.75,
+        lambda: (tf.image.random_brightness(image,max_delta=0.15),label),
+        lambda: (image,label)))
+    train_dataset = train_dataset.map(lambda image, label: tf.cond(tf.random.uniform([], 0, 1) > 0.75,
+        lambda: (tf.image.random_hue(image,max_delta=0.08),label),
+        lambda: (image,label)))
     train_dataset = train_dataset.map(lambda x, y: (
         dataset.transform_images(x, FLAGS.size),
         dataset.transform_targets(y, anchors, anchor_masks, FLAGS.size))).repeat()
+    train_dataset = train_dataset.map(lambda image, label: (tf.clip_by_value(image, 0., 1.0),label))
+    
+    # Print some figures to check the augmentation
+#    plot_images(train_dataset, n_images=1, samples_per_image=10)
     # allow loading during calculations
     train_dataset = train_dataset.prefetch(
         buffer_size=tf.data.experimental.AUTOTUNE)
