@@ -191,11 +191,13 @@ def main(_argv):
                 'checkpoints/yolov3_train_{}.tf'.format(epoch))
     else:
         model.compile(optimizer=optimizer, loss=loss,
+#                      metrics=[tf.keras.metrics.Precision(),
+#                          tf.keras.metrics.Accuracy()],
                       run_eagerly=(FLAGS.mode == 'eager_fit'))
 
         callbacks = [
             ReduceLROnPlateau(verbose=1),
-            EarlyStopping(patience=10, verbose=1),
+            EarlyStopping(patience=20, verbose=1),
             ModelCheckpoint('checkpoints/yolov3_train.tf',
                             verbose=1, save_weights_only=True,
                             save_best_only=True,
@@ -212,6 +214,7 @@ def main(_argv):
                             steps_per_epoch=18,
                             callbacks=callbacks,
                             validation_data=val_dataset)
+
 
 
 if __name__ == '__main__':
