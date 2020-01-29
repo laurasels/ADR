@@ -191,13 +191,12 @@ def main(_argv):
                 'checkpoints/yolov3_train_{}.tf'.format(epoch))
     else:
         model.compile(optimizer=optimizer, loss=loss,
-#                      metrics=[tf.keras.metrics.Precision(),
-#                          tf.keras.metrics.Accuracy()],
                       run_eagerly=(FLAGS.mode == 'eager_fit'))
 
         callbacks = [
-            ReduceLROnPlateau(verbose=1),
-            EarlyStopping(patience=20, verbose=1),
+            ReduceLROnPlateau(monitor='val_loss', factor=0.2,
+                patience=10, mode='min', cooldown=5, min_lr=0.0001, verbose=1),
+            EarlyStopping(patience=30, verbose=1),
             ModelCheckpoint('checkpoints/yolov3_train.tf',
                             verbose=1, save_weights_only=True,
                             save_best_only=True,
@@ -206,8 +205,6 @@ def main(_argv):
             TensorBoard(log_dir='logs'),
             CSVLogger('training.log')
         ]
-
-#        print(len(list(train_dataset)))
 
         history = model.fit(train_dataset,
                             epochs=FLAGS.epochs,
