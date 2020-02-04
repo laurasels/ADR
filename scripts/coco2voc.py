@@ -3,17 +3,19 @@ import pandas as pd
 from pathlib import Path
 import os
 import json
+from absl import app, flags, logging
+from absl.flags import FLAGS
 
-# Specify paths
-cocopath = '/computer-vision/ADR/data/output.json'
+'''
+Transforms coco-json output from brainmatter to VOC xml files for training
 
-DGXimgpath = '/computer-vision/ADR/data/detected_images_with_GS/'
-DGXxmlpath = Path('/computer-vision/ADR/data/detected_images_with_GS/annotations')
-
-#DGXimgpath = '/home/killaarsl/Documents/adr/'
-#DGXxmlpath = Path('/home/killaarsl/Documents/adr/annotations')
+'''
+flags.DEFINE_string('json_file','','path to the json file from Brainmatter')
+flags.DEFINE_string('img_dir','','path where all the images will be during training. Will be included in the xml')
+flags.DEFINE_string('xml_dir','','path where the xml files will be saved')
 
 def writebbox2xml(bbox,outputDir,file,annotation_name,width,height):
+    outputDir = Path(outputDir)
     # --  Write output of boundingbox to xml file
     outputPath = outputDir / file.split('/')[-1].replace('.png', '.xml')
     
@@ -72,56 +74,59 @@ def writebbox2xml(bbox,outputDir,file,annotation_name,width,height):
             the_file.write('\n\t</object>')
             the_file.write('\n</annotation>')
 
-# Read coco.json from Brainmatter    
-with open(cocopath) as handle:
-    coco = json.loads(handle.read())
-
-# Create category df    
-category_ids = []
-category_names = []
-for i in range(len(coco['categories'])):
-    print(i)
-    category_ids.append(coco['categories'][i]['id'])
-    category_names.append(coco['categories'][i]['name'])
+def main(_argv):
+    # Read coco.json from Brainmatter    
+    with open(FLAGS.json_file) as handle:
+        coco = json.loads(handle.read())
     
-category_df = pd.DataFrame({'names':category_names},index=category_ids)
-
-# Create image df
-image_ids = []
-image_names = []
-image_widths = []
-image_heights = []
-for i in range(len(coco['images'])):
-    print(i)
-    image_ids.append(coco['images'][i]['id'])
-    filename = coco['images'][i]['file_name']
-    image_names.append(DGXimgpath + filename.split('/')[-1])
-    image_heights.append(coco['images'][i]['height'])
-    image_widths.append(coco['images'][i]['width'])
+    # Create category df    
+    category_ids = []
+    category_names = []
+    for i in range(len(coco['categories'])):
+        print(i)
+        category_ids.append(coco['categories'][i]['id'])
+        category_names.append(coco['categories'][i]['name'])
+        
+    category_df = pd.DataFrame({'names':category_names},index=category_ids)
     
-image_df = pd.DataFrame({'filename':image_names,
-                         'height':image_heights,
-                         'width':image_widths},index=image_ids)
-
-# Loop over annotations, read info from the category and image df and
-# write the output as a bbox in in an xml file
-for i in range(len(coco['annotations'])):
-    image_id = coco['annotations'][i]['image_id']
-    image_name = image_df.loc[image_id,'filename']
-    image_height = image_df.loc[image_id,'height']
-    image_width = image_df.loc[image_id,'width']
-    annotation_id = coco['annotations'][i]['category_id']
-    annotation_name = category_df.loc[annotation_id,'names']
+    # Create image df
+    image_ids = []
+    image_names = []
+    image_widths = []
+    image_heights = []
+    for i in range(len(coco['images'])):
+        print(i)
+        image_ids.append(coco['images'][i]['id'])
+        filename = coco['images'][i]['file_name']
+        image_names.append(FLAGS.img_dir + filename.split('/')[-1])
+        image_heights.append(coco['images'][i]['height'])
+        image_widths.append(coco['images'][i]['width'])
+        
+    image_df = pd.DataFrame({'filename':image_names,
+                             'height':image_heights,
+                             'width':image_widths},index=image_ids)
     
-    bbox = coco['annotations'][i]['bbox']
-    
-    xmin = bbox[0]
-    ymin = bbox[1]
-    xmax = bbox[0]+bbox[2]
-    ymax = bbox[1]+bbox[3]
-    
-    bbox = [xmin,ymin,xmax,ymax]
-    
-    writebbox2xml(bbox,DGXxmlpath,image_name,annotation_name,image_width,image_height)
+    # Loop over annotations, read info from the category and image df and
+    # write the output as a bbox in in an xml file
+    for i in range(len(coco['annotations'])):
+        image_id = coco['annotations'][i]['image_id']
+        image_name = image_df.loc[image_id,'filename']
+        image_height = image_df.loc[image_id,'height']
+        image_width = image_df.loc[image_id,'width']
+        annotation_id = coco['annotations'][i]['category_id']
+        annotation_name = category_df.loc[annotation_id,'names']
+        
+        bbox = coco['annotations'][i]['bbox']
+        
+        xmin = bbox[0]
+        ymin = bbox[1]
+        xmax = bbox[0]+bbox[2]
+        ymax = bbox[1]+bbox[3]
+        
+        bbox = [xmin,ymin,xmax,ymax]
+        
+        writebbox2xml(bbox,FLAGS.xml_dir,image_name,annotation_name,image_width,image_height)
   
     
+if __name__ == '__main__':
+    app.run(main)
