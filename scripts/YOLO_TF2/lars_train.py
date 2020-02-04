@@ -51,6 +51,7 @@ flags.DEFINE_integer('weights_num_classes', None, 'specify num class for `weight
                      'useful in transfer learning with different number of classes')
 flags.DEFINE_integer('nr_aug_imgs',0,'number of augmented images to print')
 flags.DEFINE_string('aug_img_path','./','folder where the augmented images are stored')
+flags.DEFINE_string('model_save_dir','yolov3_train.tf','full path for the final model weights')
 
 def main(_argv):
     physical_devices = tf.config.experimental.list_physical_devices('GPU')
@@ -197,7 +198,7 @@ def main(_argv):
             ReduceLROnPlateau(monitor='val_loss', factor=0.2,
                 patience=10, mode='min', cooldown=5, min_lr=0.0001, verbose=1),
             EarlyStopping(patience=30, verbose=1),
-            ModelCheckpoint('checkpoints/yolov3_train.tf',
+            ModelCheckpoint(FLAGS.model_save_dir,
                             verbose=1, save_weights_only=True,
                             save_best_only=True,
                             monitor='val_loss',
