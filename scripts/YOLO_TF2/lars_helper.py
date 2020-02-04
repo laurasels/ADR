@@ -21,7 +21,7 @@ def custom_augmentation(train_dataset):
         lambda: (tf.image.random_brightness(image,max_delta=0.15),label),
         lambda: (image,label)))
     train_dataset = train_dataset.map(lambda image, label: tf.cond(tf.random.uniform([], 0, 1) > 0.75,
-        lambda: (tf.image.random_hue(image,max_delta=0.08),label),
+        lambda: (tf.image.random_hue(image,max_delta=0.06),label),
         lambda: (image,label)))
     return train_dataset
 
