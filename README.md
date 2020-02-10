@@ -20,3 +20,13 @@ De beeldherkenning zal gebaseerd zijn op deze code: https://github.com/zzh8829/y
 ### Stap 3: Model tekst op borden
 * Techniek (OCR) gebruiken om codes op herkende borden te lezen 
 
+
+### RWS Yolo handleiding
+* 1: Maak een map op de DGX. Dit wordt je 'main_dir'
+* 2: Label plaatjes in de braincreator tool of zorg voor annotaties in VOC format(xml). Met Braincreator: exporteer de coco labels naar de DGX. Noem het labels.json en zet het in je main_dir. Anders: zet annotaties in main_dir/raw/Annotations. Let er op dat de image paden in de annotaties naar het goede bestand verwijzen. 
+* 3: Maak een classes.names bestand. Hierin stop je de classes die je geannoteerd hebt in dezelfde volgorde als in de labeltool. Zet die ook in je main_dir.
+* 4: Zet al je images in main_dir/raw/Images. Die gebruikt het model om te trainen.
+* 5: Draai RWS_Yolo.py met `--preprocessing True`
+* 6: Kies je trainings parameters of default met `RWS_Yolo.py --train True`
+* 7: Model getraind? Evalueren of predicten met de bijbehorende flags. 
+

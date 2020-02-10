@@ -21,20 +21,22 @@ import sys
 
 
 # Required flags for some functionality:
-flags.DEFINE_string('main_dir','','path to the main directory, other paths relative to this path')
+flags.DEFINE_string('main_dir',None,'path to the main directory, other paths relative to this path')
 flags.DEFINE_boolean('preprocessing',False,'preprocessing or not')
 flags.DEFINE_boolean('train',False,'train or not')
 flags.DEFINE_boolean('evaluate',False, 'evaluate or not')
 flags.DEFINE_string('predict_output',None,'directory to store the predicted images. Either relative to main or absolute')
 
-
-# Default option should work for these flags, specify if other option is wanted
+# Default option should work for all these following flags, specify if other option is wanted
+# Base flags
 flags.DEFINE_string('json_file','labels.json','path to the json file from Brainmatter')
 flags.DEFINE_string('classes', 'classes.names', 'classes file')
 flags.DEFINE_string('train_dataset', 'train/train.tfrecord', 'path to train_dataset')
 flags.DEFINE_string('val_dataset', 'val/val.tfrecord', 'path to val_dataset')
 flags.DEFINE_boolean('tiny', False, 'yolov3 or yolov3-tiny')
 flags.DEFINE_integer('size', 416, 'resize images to')
+
+# training specific flags
 flags.DEFINE_integer('nr_aug_imgs',0,'number of augmented images to print')
 flags.DEFINE_string('aug_img_path','aug_ims','folder where the augmented images are stored')
 flags.DEFINE_enum('mode', 'fit', ['fit', 'eager_fit', 'eager_tf'],
@@ -55,6 +57,8 @@ flags.DEFINE_integer('num_classes', 80, 'number of classes in the model')
 flags.DEFINE_integer('weights_num_classes', 80, 'specify num class for `darknet weights` file if different, '
                      'useful in transfer learning with different number of classes')
 flags.DEFINE_string('model_save_dir', 'checkpoints/yolov3_train.tf', 'name of the final model weights')
+
+# Predict or evaluate
 flags.DEFINE_string('output', 'eval_images/output_%s.jpg', 'path to output image')
 flags.DEFINE_float('yolo_iou_threshold', 0.1, 'iou threshold')
 flags.DEFINE_float('yolo_score_threshold', 0.1, 'score threshold')
