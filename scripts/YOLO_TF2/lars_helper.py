@@ -32,6 +32,7 @@ def plot_images(dataset, n_images, samples_per_image,save_path):
     '''
     imagenr = 0
     for images in dataset.repeat(samples_per_image).batch(1):
+        print(images[0].shape)
         if images[0].shape == (1, 16, 416, 416, 3):
             image = np.vstack(images[0][:,0,:,:,:].numpy())
             plt.figure()

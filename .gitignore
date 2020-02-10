@@ -2,3 +2,4 @@ data/
 racebaan/
 scripts/
 VOC2012/
+scripts_full_pipeline/Yolov3/__pycache__/*
