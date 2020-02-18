@@ -55,6 +55,6 @@ def maketraintest():
             split = 'val'
         print(counter,split)
         copyfile(imgindir / file, path / split / 'Images' / file)
-        copyfile(xmlindir / file.replace(FLAGS.image_type,'xml'), path / split / 'Annotations' / file.replace(FLAGS.image_type,'xml'))
+        copyfile(xmlindir / file.replace(FLAGS.img_type,'.xml'), path / split / 'Annotations' / file.replace(FLAGS.img_type,'.xml'))
         counter+=1
 

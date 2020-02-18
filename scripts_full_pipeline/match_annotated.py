@@ -2,7 +2,7 @@
 '''
 import os
 from pathlib import Path
-from shutil import move
+from shutil import move, rmtree
 
 
 from absl import app, flags, logging
@@ -36,6 +36,6 @@ def match_annotated():
     for f in os.listdir(xmlpath):
         if f.endswith('.xml'):
             print(f)
-            f_out = f.replace('xml',FLAGS.image_type)
+            f_out = f.replace('.xml',FLAGS.img_type)
             move(os.path.join(imginpath, f_out),os.path.join(imgoutpath, f_out))
 

@@ -29,7 +29,7 @@ def writebbox2xml(bbox,outputDir,file,annotation_name,width,height):
     """
     outputDir = Path(outputDir)
     # --  Write output of boundingbox to xml file
-    outputPath = outputDir / file.split('/')[-1].replace(FLAGS.image_type, '.xml')
+    outputPath = outputDir / file.split('/')[-1].replace(FLAGS.img_type, '.xml')
     
     # If file exists, then append the other object from that picture
     if os.path.exists(outputPath):

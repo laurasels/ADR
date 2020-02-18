@@ -107,9 +107,6 @@ def main(_argv):
     checkpoint_path = os.path.join(FLAGS.main_dir, 'checkpoints')
     if not os.path.exists(checkpoint_path):
         os.makedirs(checkpoint_path)
-        print('new')
-    else:
-        print('exists')
 
     if FLAGS.train:
         # Actual training of the model
