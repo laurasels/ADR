@@ -30,4 +30,4 @@ De beeldherkenning zal gebaseerd zijn op deze code: https://github.com/zzh8829/y
 * 6: Kies je trainings parameters of default met `RWS_Yolo.py --train True`
 * 7: Model getraind? Evalueren of predicten met de bijbehorende flags. 
 
-Voor nu moet je het script aanroepen in de map /computer-vision/ADR/scripts_full_pipeline met `python RWS_Yolo.py` en de bijbehorende vlaggen --FLAGNAME. Zie `python RWS_YOlo.py --helpshort` voor meer info
+Voor nu moet je het script aanroepen in de map /computer-vision/ADR/scripts_full_pipeline met `python RWS_Yolo.py` en de bijbehorende vlaggen --FLAGNAME. Zie `python RWS_Yolo.py --helpshort` voor meer info
