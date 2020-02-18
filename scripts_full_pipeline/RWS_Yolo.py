@@ -5,6 +5,7 @@ from absl import app, flags, logging
 from absl.flags import FLAGS
 
 from coco2voc import coco2voc
+from match_annotated import match_annotated
 from make_train_test import maketraintest
 from convert2tfrecord import convert2tfrecord
 from train import train
@@ -92,6 +93,8 @@ def main(_argv):
     if FLAGS.preprocessing:
         # Conversion of the coco labels to the VOC labels
         coco2voc()
+        # Move images if there is an annotation for it
+        match_annotated()
         # Split the data in a train and test directory (80 - 20 split)
         maketraintest()
         # Convert to TFRecord dataset format

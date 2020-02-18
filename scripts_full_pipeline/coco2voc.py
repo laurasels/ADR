@@ -105,8 +105,11 @@ def coco2voc():
     xml_dir = os.path.join(FLAGS.main_dir, 'raw/Annotations')
     
     # Check if xml_dir, if so, empty the directory
+    print(xml_dir)
     if os.path.exists(xml_dir):
         rmtree(xml_dir)
+        os.makedirs(xml_dir)
+    else:
         os.makedirs(xml_dir)
 
 
