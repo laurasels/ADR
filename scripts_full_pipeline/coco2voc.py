@@ -18,9 +18,10 @@ def writebbox2xml(bbox,outputDir,file,annotation_name,width,height):
     ----------
     bbox               list of bbox coordinates [xmin,ymin,xmax,ymax]
     outputdir          location where the final xml will be saved
-    file               name of the image file. Will also be the name of the xml (minus .png)
+    file               name of the image file. Will also be the name of the xml (minus the extension)
     annotation_name    name of the labeled object
     width/height       width/height of the image
+    Flags.img_type     extension of the image file 
 
     Returns
     -------
@@ -28,7 +29,7 @@ def writebbox2xml(bbox,outputDir,file,annotation_name,width,height):
     """
     outputDir = Path(outputDir)
     # --  Write output of boundingbox to xml file
-    outputPath = outputDir / file.split('/')[-1].replace('.png', '.xml')
+    outputPath = outputDir / file.split('/')[-1].replace(FLAGS.image_type, '.xml')
     
     # If file exists, then append the other object from that picture
     if os.path.exists(outputPath):

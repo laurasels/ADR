@@ -15,7 +15,7 @@ def match_annotated():
     Parameters
     ----------
     Flags.main_dir         the main directory of the project
-    
+    Flags.img_type         extension of the image file    
     Returns
     -------
     Directory with images (raw/Images) that have an annotation in raw/Annotations
@@ -36,6 +36,6 @@ def match_annotated():
     for f in os.listdir(xmlpath):
         if f.endswith('.xml'):
             print(f)
-            f_out = f.replace('xml','png')
+            f_out = f.replace('xml',FLAGS.image_type)
             move(os.path.join(imginpath, f_out),os.path.join(imgoutpath, f_out))
 

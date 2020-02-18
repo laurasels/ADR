@@ -31,6 +31,7 @@ flags.DEFINE_string('predict_output',None,'directory to store the predicted imag
 
 # Default option should work for all these following flags, specify if other option is wanted
 # Base flags
+flags.DEFINE_string('img_type','.png','extension of the imagefile (.XXX')
 flags.DEFINE_string('json_file','labels.json','path to the json file from Brainmatter')
 flags.DEFINE_string('classes', 'classes.names', 'classes file')
 flags.DEFINE_string('train_dataset', 'train/train.tfrecord', 'path to train_dataset')

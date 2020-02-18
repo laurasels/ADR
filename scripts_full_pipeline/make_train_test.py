@@ -17,6 +17,7 @@ def maketraintest():
     Parameters
     ----------
     Flags.main_dir         the main directory of the project
+    Flags.img_type         extension of the image file
 
     Returns
     -------
@@ -54,6 +55,6 @@ def maketraintest():
             split = 'val'
         print(counter,split)
         copyfile(imgindir / file, path / split / 'Images' / file)
-        copyfile(xmlindir / file.replace('png','xml'), path / split / 'Annotations' / file.replace('png','xml'))
+        copyfile(xmlindir / file.replace(FLAGS.image_type,'xml'), path / split / 'Annotations' / file.replace(FLAGS.image_type,'xml'))
         counter+=1
 
