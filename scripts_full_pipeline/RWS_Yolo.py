@@ -12,6 +12,7 @@ from train import train
 from evaluate import evaluate
 from predict import predict
 import sys
+import os
 
 # TODO:
 '''
@@ -100,6 +101,15 @@ def main(_argv):
         # Convert to TFRecord dataset format
         for split in ['train','val']:
             convert2tfrecord(split)
+
+    # Check if checkpoints directory exists
+    checkpoint_path = os.path.join(FLAGS.main_dir, 'checkpoints')
+    if not os.path.exists(checkpoint_path):
+        os.makedirs(checkpoint_path)
+        print('new')
+    else:
+        print('exists')
+
     if FLAGS.train:
         # Actual training of the model
         train()
